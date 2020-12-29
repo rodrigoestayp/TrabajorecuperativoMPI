@@ -33,16 +33,15 @@ int main(int argc, char** argv ){
             std::string str1(word);
             str1.erase(std::remove(str1.begin(), str1.end(), '"'),
             str1.end());
-            std::cout << str1 << '\n';
+            //std::cout << str1 << '\n';
             ano_smi.push_back(stoi(str1));
 
             std::getline(datosEnProceso, word, ';');
-            // std::stringstream datos(word);
-            // std::string str2(word);
-            // str2.erase(std::remove(str2.begin(), str2.end(), '"'),
-            // str2.end());
-            // std::cout << str2 << '\n';
-            // valorsmi.push_back(stoi(str2));
+            std::stringstream datoss(word);
+            std::string str2(word);
+            str2.erase(std::remove(str2.begin(), str2.end(), '"'),
+            str2.end());
+            valorsmi.push_back(stoi(str2));
 
          }
         
@@ -51,7 +50,7 @@ int main(int argc, char** argv ){
 
     }
     for(int i = 0;i< ano_smi.size();i++){
-        cout << "Salario minimo para el año en chile: " << ano_smi[i] << endl;
+        cout << "El salario minimo para el año en chile: " << ano_smi[i] << " el valor es: " << valorsmi[i] << endl;
 
     }
 
