@@ -15,7 +15,8 @@ using namespace std;
 
 
 int main(int argc, char** argv ){
-    //lectura de primer archivo csv -> smi.csv
+    //Lectura de primer archivo csv -> smi.csv
+    //Inicialización de variables
 
     std::ifstream leerDesde;
     std::string linea = "";
@@ -24,6 +25,13 @@ int main(int argc, char** argv ){
     std::vector<int>  ano_smi;
     std::vector<float> valorsmi;
 
+    // Control de error, en caso de que falle el path
+    if(leerDesde.fail()){
+        std::cout << "El path de la ruta del archivo /smi.csv es erroneo, porfavor verificar "  << '\n';
+        std::exit(1);
+    }
+
+    // Funcion de lectura de segundo archivo csv -> smi
     while(std::getline(leerDesde, linea)){
         if(linea[0]== '"'){
 
@@ -46,20 +54,26 @@ int main(int argc, char** argv ){
          }
     }
     // funcion de lectura de segundo archivo csv -> dollars
+    // Inicialización de variables
 
     std::ifstream leerDesde2;
     std::string linea2 = "";
     std::string word2 = "";
     leerDesde2.open(argv[2]);
     std::vector<int> ano_dollars;  
-    std::vector<float> valordollars; 
+    std::vector<float> valordollars;
 
+    // Control de error, en caso de que falle el path
+    if(leerDesde2.fail()){
+        std::cout << "El path de la ruta del archivo /dollars.csv es erroneo, porfavor verificar "  << '\n';
+        std::exit(1);
+    } 
+
+    // Funcion de lectura de segundo archivo csv -> dollars
     while(std::getline(leerDesde2, linea2)){
         if(linea2[0]== '"'){
 
-
             std::stringstream datosEnProceso(linea2);
-
             std::getline(datosEnProceso, word2, ';');
             std::stringstream datos(word2);
             std::string str1(word2);
@@ -80,7 +94,7 @@ int main(int argc, char** argv ){
          }  
 
     }
-    //funcion de distrubucion de valores 
+    //Sacar promedio y funcion de distrubucion de valores.
     int contador=0;
     float suma=0;
     float promedio=0;
@@ -105,6 +119,7 @@ int main(int argc, char** argv ){
         suma=0;
     }
     // Funcion para crear la funcion de la regresion lineal 
+    // Inicialización de variables
     float sumatoriaXY = 0;
     float x2 = 0;
     float sumX = 0;
@@ -120,14 +135,16 @@ int main(int argc, char** argv ){
     }
     m= ((25*sumatoriaXY) - (sumX*SumY)) / ((25*x2) - (sumX*sumX));
     b= (SumY/25) - (m * (sumX/25));
-    cout << "           === Resultados de divisa segun año === " << endl;
+
+    // Muestra de datos y resultados 
+    cout << "                         === Resultados de divisa segun año === " << endl;
     for(int i = 0;i< 25;i++){
-        cout << " la divisa de dolar peso chileno: "  << pesodolar[i] << " para el año: " << ano_smi[i] << endl;
+        cout << " El sueldo minimo anual transformado en la divisa de dolar  "  << pesodolar[i] << " para el año: " << ano_smi[i] << endl;
     }
-    cout << "                   === Resultado === " << endl;
-    cout << "      La funcion de regresion es y = "  << m << "x " << b  << endl;
-    cout << "                   === Integrantes === " << endl;
-    cout << "                 Rodrigo Estay Poblete " << endl;
+    cout << "                                 === Resultado === " << endl;
+    cout << "                      La funcion de regresion es y = "  << m << "x " << b  << endl;
+    cout << "                                 === Integrantes === " << endl;
+    cout << "                             Rodrigo Andres Estay Poblete " << endl;
    
 
 }
