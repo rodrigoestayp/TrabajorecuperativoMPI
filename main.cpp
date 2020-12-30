@@ -16,6 +16,7 @@ using namespace std;
 
 
 int main(int argc, char** argv ){
+    //lectura de primer archivo csv -> smi.csv
 
     std::ifstream leerDesde;
     std::string linea = "";
@@ -47,7 +48,8 @@ int main(int argc, char** argv ){
 
          }
     }
-        
+    // funcion de lectura de segundo archivo csv -> dollars
+
     std::ifstream leerDesde2;
     std::string linea2 = "";
     std::string word2 = "";
@@ -81,6 +83,7 @@ int main(int argc, char** argv ){
          }  
 
     }
+    //funcion de distrubucion de valores 
     int contador=0;
     float suma=0;
     float promedio=0;
@@ -101,8 +104,6 @@ int main(int argc, char** argv ){
         contadores.push_back(contador);
         sumas.push_back(suma);
 
-        
-
         valorpromdollars.push_back(promedio);
         pesodolar.push_back(valorsmi[i]/valorpromdollars[i]);
         contador=0;
@@ -110,16 +111,42 @@ int main(int argc, char** argv ){
             
         
     }
-    
+    // Funcion para crear la funcion de la regresion lineal 
+    float sumatoriaXY = 0;
+    float x2 = 0;
+    float sumX = 0;
+    float SumY = 0;
+    float m = 0;
+    float b = 0;
 
-
-    for(int i = 0;i< 25;i++){
-       cout << "promedio es: "  << valorpromdollars[i] << " el año es: " << ano_smi[i] << endl;
-       cout << "contador: "  << contadores[i] << " el año es: " << ano_smi[i] << endl;
-       cout << "suma: "  << sumas[i] << " el año es: " << ano_smi[i] << endl;
+    for(int i = 0;i< ano_smi.size() ;i++){
+        sumatoriaXY = sumatoriaXY + (pesodolar[i] * ano_smi[i]);
+        x2 = x2 + (ano_smi[i] * ano_smi[i]);
+        sumX = sumX + ano_smi[i];
+        SumY = SumY + pesodolar[i];
+    //    cout << "promedio es: "  << valorpromdollars[i] << " el año es: " << ano_smi[i] << endl;
+    //    cout << "contador: "  << contadores[i] << " el año es: " << ano_smi[i] << endl;
+    //    cout << "suma: "  << sumas[i] << " el año es: " << ano_smi[i] << endl;
     }
+    m= ((25*sumatoriaXY) - (sumX*SumY)) / ((25*x2) - (sumX*sumX));
+    b= (SumY/25) - (m * (sumX/25));
+
+    cout << "suma x = "  << sumX << "X -  " << endl;
+    cout << "x2 = "  <<x2 << "X -  " << endl;
+    cout << "sumay = "  << SumY << "X -  " << endl;
+    cout << "x por y "  << sumatoriaXY << "X -  "  << endl;
+    cout << "la funcion de regresion es y =  "  << m << "X  " << b  << endl;
+
+
+
+
+    // for(int i = 0;i< 25;i++){
+    //    cout << "promedio es: "  << valorpromdollars[i] << " el año es: " << ano_smi[i] << endl;
+    //    cout << "contador: "  << contadores[i] << " el año es: " << ano_smi[i] << endl;
+    //    cout << "suma: "  << sumas[i] << " el año es: " << ano_smi[i] << endl;
+    // }
         for(int i = 0;i< 25;i++){
-        cout << "peso dolar:"  << pesodolar[i] << " el año es: " << ano_smi[i] << endl;
+        cout << "pdivisa de dolar peso chileno: "  << pesodolar[i] << " para el año: " << ano_smi[i] << endl;
     }
     for(int i = 0;i<10 ;i++){
         //cout << "El salario minimo para el año en chile: " << ano_smi[i] << " el valor es: " << valorsmi[i] << endl;
