@@ -15,6 +15,19 @@ using namespace std;
 
 
 int main(int argc, char** argv ){
+
+    // inicializar variables globales
+    int rank;
+    int size;
+
+    // Inicializacion de mpi
+    MPI_Init(&argc, &argv);
+
+    // Obtencion del rank y el size del cluster
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    MPI_Comm_size(MPI_COMM_WORLD, &size);
+    MPI_Status status;
+
     //lectura de primer archivo csv -> smi.csv
 
     std::ifstream leerDesde;
@@ -24,60 +37,50 @@ int main(int argc, char** argv ){
     std::vector<int>  ano_smi;
     std::vector<float> valorsmi;
 
-    while(std::getline(leerDesde, linea)){
-        if(linea[0]== '"'){
+    int valores[2];
+    if(rank==0){
+        int cantidadLin =0;
+        while(std::getline(leerDesde, linea)){        
+            if(linea[0]== '"'){
+                // envio de linea
+                if(numProce >= size){
+                    numProce = 1;
+                }
+                MPI_Send(&linea[0],linea.size()+1,MPI_CHAR,numProce,0,MPI_COMM_WORLD);
+                numProce += 1;
+                cantidadLin += 1;
+            }
+            }
+            while(cantidadLin!=0){
+                cantidadLin -= 1;
+                MPI_Recv(&valores,2,MPI_INT,Nproc,0,MPI_COMM_WORLD,&status);
+                ano_smi.push_back();
+                valorsmi.push_back();
+            }
 
-            std::stringstream datosEnProceso(linea);
+            else{
+                MPI_Probe(0,0,MPI_COMM_WORLD,&status);
+                int count;
+                MPI_Get_count(&status,MPI_CHAR,&count);
+                char buf [count];
+                MPI_Recv(&buf,count,MPI_CHAR,0,0,MPI_COMM_WORLD,&status);
+                std::string lineaN = buf; 
+                std::stringstream datosEnProceso(linea);
+                std::getline(datosEnProceso, word, ';');
+                std::stringstream datos(word);
+                std::string str1(word);
+                str1.erase(std::remove(str1.begin(), str1.end(), '"'),
+                str1.end());
 
-            std::getline(datosEnProceso, word, ';');
-            std::stringstream datos(word);
-            std::string str1(word);
-            str1.erase(std::remove(str1.begin(), str1.end(), '"'),
-            str1.end());
-            ano_smi.push_back(stoi(str1));
+                std::getline(datosEnProceso, word, ';');
+                std::stringstream datoss(word);
+                std::string str2(word);
+                str2.erase(std::remove(str2.begin(), str2.end(), '"'),
+                str2.end());
 
-            std::getline(datosEnProceso, word, ';');
-            std::stringstream datoss(word);
-            std::string str2(word);
-            str2.erase(std::remove(str2.begin(), str2.end(), '"'),
-            str2.end());
-            valorsmi.push_back(stof(str2));
-
-         }
-    }
-    // funcion de lectura de segundo archivo csv -> dollars
-
-    std::ifstream leerDesde2;
-    std::string linea2 = "";
-    std::string word2 = "";
-    leerDesde2.open(argv[2]);
-    std::vector<int> ano_dollars;  
-    std::vector<float> valordollars; 
-
-    while(std::getline(leerDesde2, linea2)){
-        if(linea2[0]== '"'){
-
-
-            std::stringstream datosEnProceso(linea2);
-
-            std::getline(datosEnProceso, word2, ';');
-            std::stringstream datos(word2);
-            std::string str1(word2);
-            str1.erase(std::remove(str1.begin(), str1.end(), '"'),
-            str1.end());
-            str1.erase(4);
-            //std::cout << str1 << '\n';
-            ano_dollars.push_back(stoi(str1));
-
-            std::getline(datosEnProceso, word2, ';');
-            std::stringstream datoss(word2);
-            std::string str2(word2);
-            str2.erase(std::remove(str2.begin(), str2.end(), '"'),
-            str2.end());
-            //std::cout << str2 << '\n';
-            valordollars.push_back(stof(str2));
-
-         }  
+                valores = {stoi(str1),stoi(str2)};
+                MPI_Send(&valores,2,MPI_INT,0,0,MPI_COMM_WORLD);
+            }
 
     }
     //funcion de distrubucion de valores 
